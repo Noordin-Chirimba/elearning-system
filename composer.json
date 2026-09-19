@@ -1,0 +1,18 @@
+{
+    "name": "noordin/e-learning_system",
+    "type": "project",
+    "require": {
+        "monolog/monolog": "^2.9",
+        "symfony/http-foundation": "^5.4",
+        "phpmailer/phpmailer": "^6.9",
+        "stripe/stripe-php": "^15.1",
+        "cboden/ratchet": "^0.4.4",
+        "textalk/websocket": "^1.5"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Noordin\\ELearningSystem\\": "src/"
+        }
+    }
+}
