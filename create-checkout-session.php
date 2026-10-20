@@ -20,8 +20,14 @@ try {
         throw new Exception('Missing required fields');
     }
 
-    // Set your Stripe API key
-    \Stripe\Stripe::setApiKey('YOUR_STRIPE_SECRET_KEY_HERE');
+    // Load the secret key from the server environment; never commit it.
+    $stripeSecretKey = getenv('STRIPE_SECRET_KEY');
+    if (!$stripeSecretKey) {
+        throw new Exception('Stripe is not configured on this server.');
+    }
+    \Stripe\Stripe::setApiKey($stripeSecretKey);
+
+    $appBaseUrl = rtrim(getenv('APP_BASE_URL') ?: 'http://localhost/ELearningSystems', '/');
 
     // Map programs to prices
     $program_prices = [
