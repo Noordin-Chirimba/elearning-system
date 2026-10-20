@@ -11,7 +11,7 @@ if (!$stripeSecretKey || !$endpoint_secret) {
     exit;
 }
 
-\\Stripe\\Stripe::setApiKey($stripeSecretKey);
+\Stripe\Stripe::setApiKey($stripeSecretKey);
 
 // Retrieve the request's body and parse it as JSON
 $payload = @file_get_contents("php://input");
