@@ -2,14 +2,20 @@
 require 'vendor/autoload.php';
 require 'config.php'; // Include your database configuration
 
-\Stripe\Stripe::setApiKey('YOUR_STRIPE_SECRET_KEY_HERE'); // Replace with your actual Stripe secret key
+$stripeSecretKey = getenv('STRIPE_SECRET_KEY');
+$endpoint_secret = getenv('STRIPE_WEBHOOK_SECRET');
 
-// This is your Stripe CLI webhook secret for testing your endpoint locally.
-$endpoint_secret = 'whsec_455ef85f3f944515fcf52e5b05af759d8f1249c594863d8c2fc3f5456306d534';
+if (!$stripeSecretKey || !$endpoint_secret) {
+    error_log('Stripe webhook configuration is missing required environment variables.');
+    http_response_code(500);
+    exit;
+}
+
+\Stripe\Stripe::setApiKey($stripeSecretKey);
 
 // Retrieve the request's body and parse it as JSON
 $payload = @file_get_contents("php://input");
-$sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+$sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
 $event = null;
 
 try {
@@ -26,8 +32,7 @@ try {
     exit();
 }
 
-// Log the event for debugging
-file_put_contents('webhook.log', date('Y-m-d H:i:s') . ' ' . json_encode($event) . PHP_EOL, FILE_APPEND);
+// Avoid writing payment/customer payloads to a publicly reachable file.
 
 // Handle the event
 switch ($event->type) {

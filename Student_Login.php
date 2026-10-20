@@ -35,13 +35,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $mail->isSMTP();
                         $mail->Host = 'smtp.gmail.com'; // Set the SMTP server to send through
                         $mail->SMTPAuth = true;
-                        $mail->Username = 'ncnoord1nchir1mba@gmail.com'; // SMTP username
-                        $mail->Password = 'bqnc nsse iuof mfhy '; // SMTP password
+                        $mailUsername = getenv('SMTP_USERNAME');
+                        $mailPassword = getenv('SMTP_PASSWORD');
+                        if (!$mailUsername || !$mailPassword) {
+                            throw new Exception('Email service is not configured.');
+                        }
+                        $mail->Username = $mailUsername;
+                        $mail->Password = $mailPassword;
                         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                         $mail->Port = 587;
 
                         // Recipients
-                        $mail->setFrom('Noordin@gmail.com', 'HillView International School');
+                        $mail->setFrom($mailUsername, 'HillView International School');
                         $mail->addAddress($email, $name); // Add a recipient
 
                         // Content

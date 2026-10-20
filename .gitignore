@@ -1,1 +1,16 @@
-vendor/ 
+# Composer dependencies
+/vendor/
+
+# Local secrets and environment configuration
+.env
+.env.*
+!.env.example
+
+# Runtime logs
+*.log
+webhook.log
+
+# Local/editor/OS files
+.DS_Store
+Thumbs.db
+desktop.ini

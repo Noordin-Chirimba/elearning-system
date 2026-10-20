@@ -20,8 +20,14 @@ try {
         throw new Exception('Missing required fields');
     }
 
-    // Set your Stripe API key
-    \Stripe\Stripe::setApiKey('YOUR_STRIPE_SECRET_KEY_HERE');
+    // Load the secret key from the server environment; never commit it.
+    $stripeSecretKey = getenv('STRIPE_SECRET_KEY');
+    if (!$stripeSecretKey) {
+        throw new Exception('Stripe is not configured on this server.');
+    }
+    \Stripe\Stripe::setApiKey($stripeSecretKey);
+
+    $appBaseUrl = rtrim(getenv('APP_BASE_URL') ?: 'http://localhost/ELearningSystems', '/');
 
     // Map programs to prices
     $program_prices = [
@@ -52,8 +58,8 @@ try {
             'quantity' => 1,
         ]],
         'mode' => 'payment',
-        'success_url' => 'http://localhost/ELearningSystems/payment-success.php?session_id={CHECKOUT_SESSION_ID}',
-        'cancel_url' => 'http://localhost/ELearningSystems/payment-cancel.php',
+        'success_url' => $appBaseUrl . '/payment-success.php?session_id={CHECKOUT_SESSION_ID}',
+        'cancel_url' => $appBaseUrl . '/payment-cancel.php',
         'metadata' => [
             'student_name' => $data['name'],
             'phone' => $data['phone'],
